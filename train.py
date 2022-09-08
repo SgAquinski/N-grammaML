@@ -115,12 +115,12 @@ class N_gram():
 t = N_gram()
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input-dir", type=str)
+    parser.add_argument("--input-dir", type=str, required=True)
     parser.add_argument("--model",
                         type=str,
-                        help="specify the directory or a ready-made txt file where the model will be written")
+                        help="specify the directory or a ready-made txt file where the model will be written",
+                        required=True)
     arg = parser.parse_args()
-
 
     for filename in os.listdir(arg.input_dir):
         t.fit(os.path.join(arg.input_dir, filename), arg.model)
