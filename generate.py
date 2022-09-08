@@ -1,5 +1,6 @@
-import train
+from train import t as _t
 import argparse
+import pickle
 
 if __name__ == '__main__':
     parser1 = argparse.ArgumentParser()
@@ -8,7 +9,6 @@ if __name__ == '__main__':
     parser1.add_argument("--lenght", type=int)
     arg = parser1.parse_args()
 
-    t = train.N_gram()
-    t.generate(arg.model, arg.prefix, arg.lenght)
+    _t.generate(arg.model, arg.prefix, arg.lenght)
 
 

@@ -79,7 +79,7 @@ class N_gram():
         dict_of_count = {}
 
         if (not os.path.exists(model)) or (os.stat(model).st_size == 0):
-            dict_of_count = pickle.load(self.pickled_dict)
+            dict_of_count = pickle.loads(self.pickled_dict)
         else:
             formatting_read(model, dict_of_count)
 
@@ -89,14 +89,14 @@ class N_gram():
                 or tuple(prefix) not in dict_of_count.keys():
             keys = list(dict_of_count.keys())
             rand_ind = np.random.choice(range(0, len(keys)))
-            for i in range(0, len(keys[rand_ind])):
-                sentence = sentence + ' ' + keys[rand_ind][i]
+            for i in keys[rand_ind]:
+                sentence = sentence + ' ' + i
             lenght -= len(keys[rand_ind])
             next_key = keys[rand_ind]
         else:
             prefix = re.split(r"[ ()«»\n;.,!?:—_]+", prefix.lower())
-            for i in range(len(prefix)):
-                sentence = sentence + ' ' + prefix[i]
+            for i in prefix:
+                sentence = sentence + ' ' + i
             lenght -= len(prefix)
             next_key = tuple(prefix)
 
@@ -112,12 +112,15 @@ class N_gram():
 
         dict_of_count.clear()
 
+t = N_gram()
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--input-dir", type=str)
-    parser.add_argument("--model", type=str)
+    parser.add_argument("--model",
+                        type=str,
+                        help="specify the directory or a ready-made txt file where the model will be written")
     arg = parser.parse_args()
 
-    t = N_gram()
+
     for filename in os.listdir(arg.input_dir):
         t.fit(os.path.join(arg.input_dir, filename), arg.model)
