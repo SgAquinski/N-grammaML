@@ -1,13 +1,14 @@
-import train as tr
-import argparse as arp
-import pickle
+import train
+import argparse
 
-#parser = arp.ArgumentParser(description='Process some integers.')
-#parser.add_argument("-input", input, type="str")
-#tr.train("Муму.txt", "model.txt")
-#gen.generate("model.txt", 20, 20)
+if __name__ == '__main__':
+    parser1 = argparse.ArgumentParser()
+    parser1.add_argument("--model", type=str)
+    parser1.add_argument("--prefix", type=str, help="use underscore between words instead of space.")
+    parser1.add_argument("--lenght", type=int)
+    arg = parser1.parse_args()
 
-t = tr.N_gram(2)
-t.fit("data/Муму.txt", "model.txt")
-#t.fit("data/МертвыеДуши.txt", "model.txt")
-t.generate("model.txt", 20, prefix=None)
+    t = train.N_gram()
+    t.generate(arg.model, arg.prefix, arg.lenght)
+
+

@@ -2,6 +2,7 @@ import re
 import numpy as np
 import pickle
 import os
+import argparse
 
 def formatting_write(dict_of_count, key):
     sen = '(' + key[0]
@@ -32,8 +33,8 @@ def formatting_read(model, dict_of_count):
 
 class N_gram():
 
-    def __init__(self, N):
-        self.N = N
+    def __init__(self):
+        self.N = 1
         self.seed = 0
         self.pickled_dict = bytes()
 
@@ -71,8 +72,9 @@ class N_gram():
         with open(model, "a", encoding="utf-8") as f:
             for key in dict_of_count.keys():
                 f.write(formatting_write(dict_of_count, key) + "\n")
+        dict_of_count.clear()
 
-    def generate(self, model, lenght, prefix):
+    def generate(self, model, prefix, lenght):
         sentence = ""
         dict_of_count = {}
 
@@ -81,22 +83,24 @@ class N_gram():
         else:
             formatting_read(model, dict_of_count)
 
-        if prefix is None:
+        if prefix is None \
+                or prefix == "None" \
+                or prefix == '' \
+                or tuple(prefix) not in dict_of_count.keys():
             keys = list(dict_of_count.keys())
             rand_ind = np.random.choice(range(0, len(keys)))
             for i in range(0, len(keys[rand_ind])):
                 sentence = sentence + ' ' + keys[rand_ind][i]
             lenght -= len(keys[rand_ind])
             next_key = keys[rand_ind]
-            print(rand_ind)
         else:
-            prefix = re.split(r"[ ()«»\n;.,!?:—]+", prefix.lower())
+            prefix = re.split(r"[ ()«»\n;.,!?:—_]+", prefix.lower())
             for i in range(len(prefix)):
                 sentence = sentence + ' ' + prefix[i]
             lenght -= len(prefix)
             next_key = tuple(prefix)
 
-        while (0 < lenght):
+        while (lenght > 0):
             next_word = np.random.choice(dict_of_count[next_key][0],
                                          1, dict_of_count[next_key][1])
             sentence = sentence + ' ' + next_word[0]
@@ -105,3 +109,15 @@ class N_gram():
                     next_key = key
             lenght -= 1
         print(sentence)
+
+        dict_of_count.clear()
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input-dir", type=str)
+    parser.add_argument("--model", type=str)
+    arg = parser.parse_args()
+
+    t = N_gram()
+    for filename in os.listdir(arg.input_dir):
+        t.fit(os.path.join(arg.input_dir, filename), arg.model)
