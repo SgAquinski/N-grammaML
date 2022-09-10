@@ -85,8 +85,7 @@ class N_gram():
 
         if prefix is None \
                 or prefix == "None" \
-                or prefix == '' \
-                or tuple(prefix) not in dict_of_count.keys():
+                or prefix == '':
             keys = list(dict_of_count.keys())
             rand_ind = np.random.choice(range(0, len(keys)))
             for i in keys[rand_ind]:
